@@ -1,3 +1,4 @@
 *.userprefs
 tilde/bin
 tilde/obj
+packages/*
