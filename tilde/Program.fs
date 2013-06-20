@@ -9,7 +9,7 @@ open tilde
 let model = new TemplateModel()
 let razor = new RazorHandler(model)
 
-let postsDir = Environment.CurrentDirectory + "/_posts"
+let postsDir = Path.Combine(Environment.CurrentDirectory,"_posts")
 
 let postItems = 
     let rec recurseDirectories (dirInfo: DirectoryInfo) : string list = 
@@ -39,10 +39,10 @@ let copyItems() =
         match items |> List.tryFind(fun x -> fi.Name.StartsWith(x)) with | Some(x) -> true | None -> false
     
     let notUnderscore (item: 'T when 'T :> FileSystemInfo) = 
-        not (item.FullName.Replace(Environment.CurrentDirectory + "/", "").StartsWith("_"))
+        not (item.FullName.Replace(Environment.CurrentDirectory + System.IO.Path.DirectorySeparatorChar.ToString(), "").StartsWith("_"))
         
     let relative (item: 'T when 'T :> FileSystemInfo) =
-        (item.FullName.Replace(Environment.CurrentDirectory + "/", ""))
+        (item.FullName.Replace(Environment.CurrentDirectory + System.IO.Path.DirectorySeparatorChar.ToString(), ""))
     
     currDir.GetDirectories("*", SearchOption.AllDirectories)
     |> Array.filter(notUnderscore)
@@ -88,7 +88,7 @@ let main args =
         let siteDir = x.Remove(0, Environment.CurrentDirectory.Length)
         
         let lastPath =             
-            siteDir.Split('/')
+            siteDir.Split(System.IO.Path.DirectorySeparatorChar)
             |> List.ofArray |> List.rev
             |> List.tail |> List.head 
             |> sprintf "_site/posts/%s/"
