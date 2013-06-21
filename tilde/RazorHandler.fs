@@ -22,8 +22,8 @@ type TemplateResolver () =
             printfn "  Resolving: %s" name
             if File.Exists(name) then File.ReadAllText(name)
             elif File.Exists(name + ".cshtml") then File.ReadAllText(name + ".cshtml")
-            elif File.Exists("_layouts/" + name) then File.ReadAllText("_layouts/" + name)
-            elif File.Exists("_layouts/" + name + ".cshtml") then File.ReadAllText("_layouts/" + name + ".cshtml")
+            elif File.Exists("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString()+ name) then File.ReadAllText("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString() + name)
+            elif File.Exists("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString() + name + ".cshtml") then File.ReadAllText("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString() + name + ".cshtml")
             else failwithf "Could not find template file %s" name   
 
 type RazorHandler (model) =

@@ -1,7 +1,14 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{4925A630-B079-445d-BCD4-3A9C94FE9307}") = "tilde", "tilde\tilde.fsproj", "{A26CDC49-17C9-44DB-A631-1B0A28F02FE4}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "tilde", "tilde\tilde.fsproj", "{A26CDC49-17C9-44DB-A631-1B0A28F02FE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{443039B1-893F-4BC4-8852-D13FBC2E4A75}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +20,9 @@ Global
 		{A26CDC49-17C9-44DB-A631-1B0A28F02FE4}.Debug|x86.Build.0 = Debug|x86
 		{A26CDC49-17C9-44DB-A631-1B0A28F02FE4}.Release|x86.ActiveCfg = Release|x86
 		{A26CDC49-17C9-44DB-A631-1B0A28F02FE4}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = tilde\tilde.fsproj
