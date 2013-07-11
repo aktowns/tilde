@@ -78,15 +78,8 @@ let main args =
     |> Array.iter (fun post ->
         let postsDir = "_site" @@ "posts"
         let siteDir = post.Remove(0, (Environment.CurrentDirectory @@ "_posts").Length)
-        let basePath = 
-            let siteDirLen = ((siteDir.Split(Path.DirectorySeparatorChar) |> Array.rev).[0].Length)
-            (siteDir.Remove(siteDir.Length - siteDirLen))
-        printfn "%A" basePath
-        
-        let lastPath = postsDir + basePath
-        printfn "%A/%A" postsDir basePath
-        printfn ">>>> %A" lastPath
-        
+        let lastPath = postsDir + (siteDir.Remove(siteDir.LastIndexOf(dirSep) + 1))
+
         let postFilename = fileName post
         printfn "Compiling markdown: %s" (postFilename.Replace(siteDir, ""))
         let tmpl, file = 
@@ -99,7 +92,7 @@ let main args =
         tmpl.Date <- inferDate postFilename
         
         Site.Posts <- Array.append Site.Posts [|tmpl|]
-        printfn ">>> %A" lastPath
+
         Directory.CreateDirectory(lastPath) |> ignore
         File.WriteAllText(lastPath @@ postFilename, file))
     copyItems()
