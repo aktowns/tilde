@@ -3,6 +3,7 @@ namespace tilde
 open FSharp.Markdown
 open FSharp.CodeFormat
 
+open System
 open System.IO
 open System.Reflection
 open System.Text.RegularExpressions
@@ -18,7 +19,7 @@ type MarkdownHandler () =
             let results = Array.zeroCreate<Match> matches.Count
             matches.CopyTo(results, 0)
             let matchVal (m: Match) (x: int) = (m.Groups.[x].Value)
-            let tokens = [for i in results do yield i.Groups.[0].Value] 
+            let tokens = results |> Array.map(fun x -> x.Groups.[0].Value)
             Some(tokens, results |> Array.map(fun x -> (matchVal x 1, matchVal x 2)) |> Map.ofArray)
         else None
         
@@ -32,15 +33,16 @@ type MarkdownHandler () =
                         let maybeKeyvals = x.ReadBlocks block
                         let eatentokens, keyvals = 
                             match maybeKeyvals with 
-                            | Some(eatentokens, keyvals) -> (eatentokens, keyvals)
-                            | _ -> ([], [] |> Map.ofList)
+                            | Some(eatentokens, keyvals) -> eatentokens, keyvals
+                            | None -> [||], [] |> Map.ofList
                         let code =
                             let eaten =
                                 eatentokens
-                                |> List.fold (fun (content: string) (token: string) -> content.Replace(token, "")) block
+                                |> Array.fold (fun (content: string) token -> content.Replace(token, "")) block
                             eaten.Trim()
-                            
-                        let lang = match keyvals.TryFind "lang" with Some(lang) -> lang | _ -> ""
+                        
+                        let lang = defaultArg (keyvals.TryFind "lang") ""
+                        
                         let name = keyvals.TryFind "name"
                         let linenums = keyvals.TryFind "linenums"
                         let showlinenums = defaultArg linenums "true"
@@ -52,17 +54,14 @@ type MarkdownHandler () =
                                 if name.Contains("\"") then failwith "[name=.. should not contain speech marks"
                                 
                                 let snippet, err = formattingAgent.ParseSource(name, code.Trim())
-                                let html = CodeFormat.FormatHtml(snippet, System.Guid.NewGuid().ToString())
+                                let html = CodeFormat.FormatHtml(snippet, Guid.NewGuid().ToString())
                                 let snippethtml = 
-                                    html.SnippetsHtml 
-                                    |> Array.map(fun x -> x.Html)
-                                    |> Array.fold(fun x y -> x + y) ""
-                                snippethtml+ html.ToolTipHtml
+                                    html.Snippets |> Array.map(fun x -> x.Content) |> Array.fold(fun x y -> x + y) ""
+                                snippethtml + html.ToolTip
                             | None ->
                                 let addcss = if showlinenums = "true" then "linenums:1" else ""
-                                sprintf "<pre class='prettyprint %s language-%s'>" addcss lang +
-                                sprintf "%s" (Html.htmlEncode(code)) +
-                                sprintf "</pre>"
+                                sprintf "<pre class='prettyprint %s language-%s'>%s</pre>" addcss lang 
+                                    (Html.htmlEncode(code))
                         HtmlBlock(codeblock)
                     | _ as ex -> ex
         ]

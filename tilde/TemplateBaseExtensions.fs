@@ -112,10 +112,13 @@ type TemplateBaseExtensions<'T>() =
     
     member x.RenderPart(templateName) = x.RenderPart(templateName, None)
     member x.RenderPart(templateName, ?model) =  
-        printfn "    Resolving(partial): %s" templateName
+        printfn "Resolving(partial): %s" templateName
+        
         let filecontents = 
-            if File.Exists ("_includes"+System.IO.Path.DirectorySeparatorChar.ToString() + templateName) then "_includes"+System.IO.Path.DirectorySeparatorChar.ToString() + templateName
-            elif File.Exists ("_includes"+System.IO.Path.DirectorySeparatorChar.ToString() + templateName + ".cshtml") then "_includes"+System.IO.Path.DirectorySeparatorChar.ToString() + templateName + ".cshtml"
+            if File.Exists(Path.Combine("_includes", templateName)) then 
+                Path.Combine("_includes", templateName)
+            elif File.Exists(Path.Combine("_includes", templateName) + ".cshtml") then 
+                Path.Combine("_includes", templateName) + ".cshtml"
             else failwithf "Failed to find partial template: %s" templateName
         
         match model with

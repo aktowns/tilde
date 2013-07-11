@@ -13,17 +13,18 @@ type TemplateModel () =
 
 type Site () = 
     static member val Posts : tilde.TemplateBaseExtensions<_>[] = [||] with get,set
-    
     static member val Url = "" with get,set
 
 type TemplateResolver () =
     interface ITemplateResolver with
-        member x.Resolve name =
-            printfn "  Resolving: %s" name
+        member x.Resolve name =            
             if File.Exists(name) then File.ReadAllText(name)
-            elif File.Exists(name + ".cshtml") then File.ReadAllText(name + ".cshtml")
-            elif File.Exists("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString()+ name) then File.ReadAllText("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString() + name)
-            elif File.Exists("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString() + name + ".cshtml") then File.ReadAllText("_layouts"+System.IO.Path.DirectorySeparatorChar.ToString() + name + ".cshtml")
+            elif File.Exists(name + ".cshtml") then 
+                File.ReadAllText(name + ".cshtml")
+            elif File.Exists("_layouts" + Path.DirectorySeparatorChar.ToString() + name) then 
+                File.ReadAllText("_layouts" + Path.DirectorySeparatorChar.ToString() + name)
+            elif File.Exists("_layouts" + Path.DirectorySeparatorChar.ToString() + name + ".cshtml") then 
+                File.ReadAllText("_layouts" + Path.DirectorySeparatorChar.ToString() + name + ".cshtml")
             else failwithf "Could not find template file %s" name   
 
 type RazorHandler (model) =
